@@ -1,0 +1,130 @@
+{
+  "PAPER-I": {
+    "Engineering Mathematics": {
+      "Linear Algebra": [
+        "Matrices",
+        "Determinants",
+        "System of linear equations",
+        "Eigenvalues and eigenvectors",
+        "LU decomposition",
+        "Orthonormal bases",
+        "Transforms – Fourier, DCT, wavelets"
+      ],
+      "Calculus": [
+        "Limits",
+        "Continuity",
+        "Differentiability",
+        "Maxima and minima",
+        "Mean value theorem",
+        "Integration",
+        "Vector calculus – gradient, divergence, curl, integral theorems"
+      ],
+      "Probability": [
+        "Random variables",
+        "Probability distributions – uniform, normal, exponential, Poisson, binomial",
+        "Mean, median, mode, standard deviation",
+        "Conditional probability and Bayes theorem",
+        "Information theory: Shannon entropy, information, conditional information"
+      ]
+    },
+    "Discrete Mathematics": [
+      "Propositional and first order logic",
+      "Sets, relations, functions, partial orders and lattices, groups",
+      "Graphs: connectivity, matching, coloring",
+      "Combinatorics: counting, recurrence relations, generating functions"
+    ],
+    "Digital Logic": [
+      "Boolean algebra",
+      "Combinational and sequential circuits",
+      "Minimization",
+      "Number representation and computer arithmetic (fixed and floating point)"
+    ],
+    "Computer Organization and Architecture": [
+      "Machine instructions and addressing modes",
+      "Assembly language",
+      "ALU, data path and control unit",
+      "Instruction pipelining",
+      "Memory hierarchy: cache, main memory and secondary storage",
+      "I/O interface (interrupt and DMA modes)",
+      "RISC, CISC, parallel architectures"
+    ],
+    "Programming and Data Structures": [
+      "Programming in C: functions, structures, memory management",
+      "Recursion",
+      "Arrays, stacks, queues, linked lists",
+      "Trees, binary search trees, binary heaps, graphs",
+      "Object oriented programming basics"
+    ],
+    "Algorithms": [
+      "Searching, sorting, hashing",
+      "Asymptotic worst case, time and space complexity",
+      "Algorithm design techniques: greedy, dynamic programming and divide-and-conquer",
+      "Graph search, minimum spanning trees, shortest paths"
+    ]
+  },
+  "PAPER-II": {
+    "Compiler Design": [
+      "Lexical analysis",
+      "Parsing",
+      "Syntax-directed translation",
+      "Runtime environments",
+      "Intermediate code generation"
+    ],
+    "Operating System": [
+      "Processes, threads, inter-process communication",
+      "Concurrency and synchronization",
+      "Deadlocks",
+      "CPU scheduling",
+      "Memory management and virtual memory",
+      "File systems",
+      "Virtual machines and hypervisors",
+      "Secure operating systems"
+    ],
+    "Theory of Computation": [
+      "Regular expressions and finite automata",
+      "Context-free grammars and push-down automata",
+      "Regular and context-free languages",
+      "Pumping lemma",
+      "Turing machines and undecidability"
+    ],
+    "Databases": [
+      "ER-model",
+      "Relational model: relational algebra, tuple calculus, SQL",
+      "Integrity constraints",
+      "Normal forms",
+      "File organization, indexing (e.g., B and B+ trees)",
+      "Transactions and concurrency controls"
+    ],
+    "Computer Networks": [
+      "Concept of layering, OSI model",
+      "LAN technologies (Ethernet)",
+      "Flow and error control techniques",
+      "IPv4 / IPv6, routers and routing algorithms (distance vector, link state)",
+      "TCP/UDP and sockets, congestion control",
+      "Application layer protocols (DNS, SMTP, POP, FTP, HTTP)",
+      "Basics of WiFi"
+    ],
+    "Security of Cyber Systems": [
+      "Cyber security principles",
+      "Kerberos, RADIUS",
+      "Secure protocols (IPSec, SSH, SSL)",
+      "Basics of public key and private key cryptography",
+      "Hash functions, block ciphers, digital signatures, certificates",
+      "Firewalls, intrusion detection systems",
+      "Basics of IoT security and Cloud security",
+      "Threats, vulnerabilities, malicious software",
+      "Attacks: buffer overflow, DoS, DDoS, SQL injection, web application attacks"
+    ],
+    "AI and Machine Learning": [
+      "Classification and clustering techniques",
+      "Dimensionality reduction: PCA, SVD",
+      "Correlation and regression analysis",
+      "Training and test data: over fitting, under fitting",
+      "Search",
+      "Ontology",
+      "Decision trees",
+      "Artificial Neural Networks: activation function, multi-layer perceptron, deep learning",
+      "Application of artificial neural networks"
+    ]
+  }
+}

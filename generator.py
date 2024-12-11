@@ -1,9 +1,10 @@
+import sqlite3
 import os
 import getpass
 from langchain_ollama import ChatOllama
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import WebBaseLoader
-from langchain_community.vectorstores import SKLearnVectorStore
+from langchain_chroma import Chroma
 from langchain_nomic.embeddings import NomicEmbeddings
 
 
@@ -19,25 +20,11 @@ _set_env("LANGSMITH_API_KEY")
 os.environ["LANGCHAIN_TRACING_V2"] = "true"
 os.environ["LANGCHAIN_PROJECT"] = "local-llama32-rag"
 
-urls=["https://www.geeksforgeeks.org/python-dictionary-get-method/",
-    ]
-
-
-# Load documents
-docs = [WebBaseLoader(url).load() for url in urls]
-docs_list = [item for sublist in docs for item in sublist]
-
-# Split documents
-text_splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(
-    chunk_size=1000, chunk_overlap=200
+vectorstore = Chroma(
+    persist_directory="C:/Users/karti/Desktop", 
+    embedding_function=NomicEmbeddings(model="nomic-embed-text-v1.5", inference_mode="local")
 )
-doc_splits = text_splitter.split_documents(docs_list)
 
-# Add to vectorDB
-vectorstore = SKLearnVectorStore.from_documents(
-    documents=doc_splits,
-    embedding=NomicEmbeddings(model="nomic-embed-text-v1.5", inference_mode="local"),
-)
 
 # Create retriever
 retriever = vectorstore.as_retriever(k=3)
@@ -448,3 +435,7 @@ workflow.add_conditional_edges(
 # Compile
 graph = workflow.compile()
 #display(Image(graph.get_graph().draw_mermaid_png()))
+
+inputs = {"question": "Introduction to cyber security", "max_retries": 3}
+for event in graph.stream(inputs, stream_mode="values"):
+    print(event)
