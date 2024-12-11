@@ -1,0 +1,48 @@
+{
+    "candidate_profile": "Software Engineer with 3 years of experience in full-stack development, specializing in React and Node.js.",
+    "stage": "Stage 1",
+    "basic_info": {
+        "name": "John Doe",
+        "location": "San Francisco, USA",
+        "current_role": "Frontend Developer at XYZ Corp"
+    },
+    "education": [
+        {
+            "degree": "B.Tech in Computer Science",
+            "institution": "Stanford University",
+            "year": "2020"
+        }
+    ],
+    "skills": ["JavaScript", "React", "Node.js", "Docker", "MongoDB"],
+    "experience": [
+        {
+            "role": "Frontend Developer",
+            "company": "XYZ Corp",
+            "duration": "2 years",
+            "responsibilities": "Developed and maintained React-based web applications."
+        },
+        {
+            "role": "Junior Developer",
+            "company": "Tech Solutions",
+            "duration": "1 year",
+            "responsibilities": "Worked on backend APIs using Node.js and MongoDB."
+        }
+    ],
+    "achievements": [
+        "Certified AWS Solutions Architect",
+        "Employee of the Month at XYZ Corp (March 2023)"
+    ],
+    "domain": "Full-Stack Development",
+    "specific_projects": [
+        {
+            "name": "E-commerce Platform",
+            "description": "Built a scalable e-commerce web application using MERN stack.",
+            "impact": "Improved user engagement by 30%."
+        },
+        {
+            "name": "DevOps Automation",
+            "description": "Set up CI/CD pipelines for production deployments using Docker and Jenkins.",
+            "impact": "Reduced deployment time by 50%."
+        }
+    ]
+}
