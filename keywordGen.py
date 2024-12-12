@@ -1,5 +1,4 @@
 import json
-import re
 from typing import Dict, List, Any
 import spacy
 from collections import Counter
@@ -68,18 +67,66 @@ class ResumeKeywordExtractor:
 
         return keywords
     
-def main():
+class KeywordExtractor:
+    def __init__(self):
+        try:
+            import spacy
+            self.nlp = spacy.load("en_core_web_sm")
+        except OSError:
+            print("Downloading spaCy English model. This might take a few moments...")
+            import subprocess
+            subprocess.run(["python", "-m", "spacy", "download", "en_core_web_sm"])
+            self.nlp = spacy.load("en_core_web_sm")
+
+    def extract_keywords(self, text: str) -> List[str]:
+        """
+        Extract the most relevant 7 total keywords from the given text. SHOULD BE ONLY MAX 7 KEYWORDS
+        
+        Args:
+            text (str): The input text from which to extract keywords.
+        
+        Returns:
+            List[str]: A list of Unique semantic meaning relevant keywords should be under 7 elements.
+            
+        """
+        if not text:
+            return []
+
+        # Process the text
+        doc = self.nlp(text)
+
+        # Extract relevant keywords (nouns, proper nouns, verbs) excluding stopwords
+        keywords = [
+            token.text for token in doc 
+            if token.pos_ in ["NOUN", "PROPN", "VERB"] and not token.is_stop
+        ]
+
+        # Remove duplicates and return
+        return sorted(set(keywords[:5]))
+    
+    
+def extractresume():
     # Open and load the JSON file directly
-    with open('Resume.json', 'r') as file:
+    with open('./json/Resume.json', 'r') as file:
         resume_data = json.load(file)
     
     # Extract keywords
     extractor = ResumeKeywordExtractor()
     keywords = extractor.extract_keywords(resume_data)
     
-    for category, words in keywords.items():
-        print(f"{category.replace('_', ' ').title()}: {words}")
-    
+    return keywords
 
-if __name__ == "__main__":
-    main()
+def extractanswer():
+    # Open and load the JSON file directly
+    with open('./json/data.json', 'r') as file:
+        answer_data = json.load(file)
+    
+    # Extract keywords
+    extractor = KeywordExtractor()
+    keywords = extractor.extract_keywords(answer_data.get('dataa',''))
+    
+    return keywords
+
+# print(ResumeKeywordExtractor())
+# print(extractanswer())
+hi=1

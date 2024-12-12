@@ -1,11 +1,12 @@
-import sqlite3
 import os
 import getpass
+from keywordGen import extractanswer
 from langchain_ollama import ChatOllama
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import WebBaseLoader
 from langchain_chroma import Chroma
-from langchain_nomic.embeddings import NomicEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings
+
 
 
 local_llm = "llama3.2:latest"
@@ -16,15 +17,21 @@ def _set_env(var: str):
         os.environ[var] = getpass.getpass(f"{var}: ")
 _set_env("TAVILY_API_KEY")
 os.environ["TOKENIZERS_PARALLELISM"] = "true"
+os.environ["clean_up_tokenization_spaces"]="true"
 _set_env("LANGSMITH_API_KEY")
 os.environ["LANGCHAIN_TRACING_V2"] = "true"
 os.environ["LANGCHAIN_PROJECT"] = "local-llama32-rag"
+os.environ['USER_AGENT'] = 'myagent'
+os.environ["USER_AGENT"] = "MyApp/1.0"
+
+
+persist_directory = "./VectorDB/"
 
 vectorstore = Chroma(
-    persist_directory="C:/Users/karti/Desktop", 
-    embedding_function=NomicEmbeddings(model="nomic-embed-text-v1.5", inference_mode="local")
-)
+    persist_directory=persist_directory,
+    embedding_function = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2"),
 
+)
 
 # Create retriever
 retriever = vectorstore.as_retriever(k=3)
@@ -184,7 +191,7 @@ def retrieve(state):
     Returns:
         state (dict): New key added to state, documents, that contains retrieved documents
     """
-    print("---RETRIEVE---")
+    # print("---RETRIEVE---")
     question = state["question"]
 
     # Write retrieved documents to documents key in state
@@ -202,7 +209,7 @@ def generate(state):
     Returns:
         state (dict): New key added to state, generation, that contains LLM generation
     """
-    print("---GENERATE---")
+    # print("---GENERATE---")
     question = state["question"]
     documents = state["documents"]
     loop_step = state.get("loop_step", 0)
@@ -226,7 +233,7 @@ def grade_documents(state):
         state (dict): Filtered out irrelevant documents and updated web_search state
     """
 
-    print("---CHECK DOCUMENT RELEVANCE TO QUESTION---")
+    # print("---CHECK DOCUMENT RELEVANCE TO QUESTION---")
     question = state["question"]
     documents = state["documents"]
 
@@ -244,11 +251,11 @@ def grade_documents(state):
         grade = json.loads(result.content)["binary_score"]
         # Document relevant
         if grade.lower() == "yes":
-            print("---GRADE: DOCUMENT RELEVANT---")
+            # print("---GRADE: DOCUMENT RELEVANT---")
             filtered_docs.append(d)
         # Document not relevant
         else:
-            print("---GRADE: DOCUMENT NOT RELEVANT---")
+            # print("---GRADE: DOCUMENT NOT RELEVANT---")
             # We do not include the document in filtered_docs
             # We set a flag to indicate that we want to run web search
             web_search = "Yes"
@@ -267,13 +274,13 @@ def web_search(state):
         state (dict): Appended web results to documents
     """
 
-    print("---WEB SEARCH---")
+    # print("---WEB SEARCH---")
     question = state["question"]
     documents = state.get("documents", [])
 
     # Web search
     docs = web_search_tool.invoke({"query": question})
-    web_results = "\n".join([d["content"] for d in docs])
+    web_results = "\n".join([d["content"] for d in docs]) 
     web_results = Document(page_content=web_results)
     documents.append(web_results)
     return {"documents": documents}
@@ -293,17 +300,15 @@ def route_question(state):
         str: Next node to call
     """
 
-    print("---ROUTE QUESTION---")
+    # print("---ROUTE QUESTION---")
     route_question = llm_json_mode.invoke(
         [SystemMessage(content=router_instructions)]
         + [HumanMessage(content=state["question"])]
     )
     source = json.loads(route_question.content)["datasource"]
     if source == "websearch":
-        print("---ROUTE QUESTION TO WEB SEARCH---")
         return "websearch"
     elif source == "vectorstore":
-        print("---ROUTE QUESTION TO RAG---")
         return "vectorstore"
 
 
@@ -318,7 +323,7 @@ def decide_to_generate(state):
         str: Binary decision for next node to call
     """
 
-    print("---ASSESS GRADED DOCUMENTS---")
+    # print("---ASSESS GRADED DOCUMENTS---")
     question = state["question"]
     web_search = state["web_search"]
     filtered_documents = state["documents"]
@@ -326,13 +331,13 @@ def decide_to_generate(state):
     if web_search == "Yes":
         # All documents have been filtered check_relevance
         # We will re-generate a new query
-        print(
-            "---DECISION: NOT ALL DOCUMENTS ARE RELEVANT TO QUESTION, INCLUDE WEB SEARCH---"
-        )
+        # print(
+        #     "---DECISION: NOT ALL DOCUMENTS ARE RELEVANT TO QUESTION, INCLUDE WEB SEARCH---"
+        # )
         return "websearch"
     else:
         # We have relevant documents, so generate answer
-        print("---DECISION: GENERATE---")
+        # print("---DECISION: GENERATE---")
         return "generate"
 
 
@@ -347,7 +352,7 @@ def grade_generation_v_documents_and_question(state):
         str: Decision for next node to call
     """
 
-    print("---CHECK HALLUCINATIONS---")
+    # print("---CHECK HALLUCINATIONS---")
     question = state["question"]
     documents = state["documents"]
     generation = state["generation"]
@@ -364,9 +369,9 @@ def grade_generation_v_documents_and_question(state):
 
     # Check hallucination
     if grade == "yes":
-        print("---DECISION: GENERATION IS GROUNDED IN DOCUMENTS---")
+        # print("---DECISION: GENERATION IS GROUNDED IN DOCUMENTS---")
         # Check question-answering
-        print("---GRADE GENERATION vs QUESTION---")
+        # print("---GRADE GENERATION vs QUESTION---")
         # Test using question and generation from above
         answer_grader_prompt_formatted = answer_grader_prompt.format(
             question=question, generation=generation.content
@@ -377,19 +382,19 @@ def grade_generation_v_documents_and_question(state):
         )
         grade = json.loads(result.content)["binary_score"]
         if grade == "yes":
-            print("---DECISION: GENERATION ADDRESSES QUESTION---")
+            # print("---DECISION: GENERATION ADDRESSES QUESTION---")
             return "useful"
         elif state["loop_step"] <= max_retries:
-            print("---DECISION: GENERATION DOES NOT ADDRESS QUESTION---")
+            # print("---DECISION: GENERATION DOES NOT ADDRESS QUESTION---")
             return "not useful"
         else:
-            print("---DECISION: MAX RETRIES REACHED---")
+            # print("---DECISION: MAX RETRIES REACHED---")
             return "max retries"
     elif state["loop_step"] <= max_retries:
-        print("---DECISION: GENERATION IS NOT GROUNDED IN DOCUMENTS, RE-TRY---")
+        # print("---DECISION: GENERATION IS NOT GROUNDED IN DOCUMENTS, RE-TRY---")
         return "not supported"
     else:
-        print("---DECISION: MAX RETRIES REACHED---")
+        # print("---DECISION: MAX RETRIES REACHED---")
         return "max retries"
     
 from langgraph.graph import StateGraph
@@ -436,6 +441,12 @@ workflow.add_conditional_edges(
 graph = workflow.compile()
 #display(Image(graph.get_graph().draw_mermaid_png()))
 
-inputs = {"question": "Introduction to cyber security", "max_retries": 3}
+abcc=extractanswer()
+print(abcc)
+
+inputs = {"question": 'ke',
+          "max_retries": 3}
 for event in graph.stream(inputs, stream_mode="values"):
-    print(event)
+    abc=event.get('generation')
+    print(abc)
+    
