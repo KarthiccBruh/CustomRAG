@@ -441,12 +441,8 @@ workflow.add_conditional_edges(
 graph = workflow.compile()
 #display(Image(graph.get_graph().draw_mermaid_png()))
 
-abcc=extractans()
-print(abcc)
-
-inputs = {"question": 'ke',
+inputs = {f"question": '{extractans[0]}, {extractans[1]}, {extractans[2]}, {extractans[3]} are the keywords and now generate an answer related to the same keywords. ',
           "max_retries": 3}
 for event in graph.stream(inputs, stream_mode="values"):
-    abc=event.get('generation')
-    print(abc)
+    print(event.get('generation'))
     
