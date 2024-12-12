@@ -116,7 +116,7 @@ def extractresume():
     
     return keywords
 
-def extractanswer():
+def extractans():
     # Open and load the JSON file directly
     with open('./json/data.json', 'r') as file:
         answer_data = json.load(file)
@@ -128,5 +128,5 @@ def extractanswer():
     return keywords
 
 # print(ResumeKeywordExtractor())
-# print(extractanswer())
+# print(extractans())
 hi=1

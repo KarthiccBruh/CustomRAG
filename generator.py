@@ -1,6 +1,6 @@
 import os
 import getpass
-from keywordGen import extractanswer
+from keywordGen import extractans
 from langchain_ollama import ChatOllama
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import WebBaseLoader
@@ -441,7 +441,7 @@ workflow.add_conditional_edges(
 graph = workflow.compile()
 #display(Image(graph.get_graph().draw_mermaid_png()))
 
-abcc=extractanswer()
+abcc=extractans()
 print(abcc)
 
 inputs = {"question": 'ke',
